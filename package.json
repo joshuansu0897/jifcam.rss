@@ -1,0 +1,17 @@
+{
+  "name": "jifcam.rss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^16.1.8",
+    "feedsub": "^0.7.1",
+    "mongoose": "^5.7.12"
+  }
+}
