@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const async = require('async')
 const Joi = require('@hapi/joi')
 
 function RSSModel(name) {
@@ -37,7 +38,7 @@ function RSSModel(name) {
 /**
  * getData RSS
  */
-RSSModel.prototype.getData = (data) => {
+RSSModel.prototype.getData = function (data) {
   return {
     title: data.title,
     duration: data.pubdate,
@@ -49,22 +50,29 @@ RSSModel.prototype.getData = (data) => {
 /**
  * insert RSS
  */
-RSSModel.prototype.insert = (data) => {
+RSSModel.prototype.insert = function (data) {
+  const _this = this
 
   let listCallbacks = [
     function (callback) {
-      Joi.validate(data, this.validator, callback)
+      console.log(' **** data joi **** ')
+      console.log(data)
+      Joi.validate(data, _this.validator, callback)
     },
     function (data, callback) {
-      this.modelDB.create(data, callback)
+      console.log(' **** data **** ')
+      console.log(data)
+      _this.modelDB.create(data, callback)
     }
   ]
 
   let promise = new Promise((resolve, reject) => {
-    async.waterfall(listCallbacks, (error, result) => {
+    async.waterfall(listCallbacks, async function (error, result) {
       if (error) {
+        console.log(error)
         reject(error)
       } else {
+        console.log(result)
         resolve(result)
       }
     })
@@ -76,22 +84,29 @@ RSSModel.prototype.insert = (data) => {
 /**
  * insertMany RSS
  */
-RSSModel.prototype.insertMany = (data) => {
+RSSModel.prototype.insertMany = function (data) {
+  const _this = this
 
   let listCallbacks = [
     function (callback) {
-      Joi.validate(data, this.listValidator, callback)
+      console.log(' **** data joi **** ')
+      console.log(data)
+      Joi.validate(data, _this.listValidator, callback)
     },
     function (data, callback) {
-      this.modelDB.insertMany(data, callback)
+      console.log(' **** data **** ')
+      console.log(data)
+      _this.modelDB.insertMany(data, callback)
     }
   ]
 
   let promise = new Promise((resolve, reject) => {
-    async.waterfall(listCallbacks, (error, result) => {
+    async.waterfall(listCallbacks, async function (error, result) {
       if (error) {
+        console.log(error)
         reject(error)
       } else {
+        console.log(result)
         resolve(result)
       }
     })

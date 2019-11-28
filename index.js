@@ -1,4 +1,15 @@
+const config = require('./config').config
+const mongoose = require('mongoose')
 const { Worker } = require('worker_threads')
+
+const DB_URI = process.env.DB_URI || config.DB_URI || 'mongodb://localhost:27017/'
+const DB_NAME = config.MONGODB_DB || 'jifcam_rss'
+mongoose.set('useNewUrlParser', true)
+mongoose.set('useFindAndModify', false)
+mongoose.set('useUnifiedTopology', true)
+mongoose.set('useCreateIndex', true)
+
+mongoose.connect(DB_URI + DB_NAME)
 
 runService = async (workerData) => {
   const worker = new Worker('./src/utils/worker.js', { workerData })

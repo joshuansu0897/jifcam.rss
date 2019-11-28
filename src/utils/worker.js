@@ -29,22 +29,34 @@ const feedSub = new FeedSub(workerData, {
   skipDays: false,
 })
 
-feedSub.on('item', (item) => {
-  parentPort.postMessage('Got item!')
+feedSub.on('item', async (item) => {
+  try {
+    parentPort.postMessage('Got item!')
 
-  const data = rss.getData(item)
-  console.log(data)
+    const data = rss.getData(item)
+    parentPort.postMessage(data)
 
-  rss.insert(data)
+    const res = await rss.insert(data)
+    parentPort.postMessage(res)
+  } catch (err) {
+    parentPort.postMessage('err!')
+    parentPort.postMessage(err)
+  }
 })
 
-feedSub.on('items', (items) => {
-  parentPort.postMessage('Got Many item!')
+feedSub.on('items', async (items) => {
+  try {
+    parentPort.postMessage('Got Many item!')
 
-  const data = items.map(item => rss.getData(item))
-  console.log(data)
+    const data = items.map(item => rss.getData(item))
+    parentPort.postMessage(data)
 
-  rss.insertMany(data)
+    const res = await rss.insertMany(data)
+    parentPort.postMessage(res)
+  } catch (err) {
+    parentPort.postMessage('err!')
+    parentPort.postMessage(err)
+  }
 })
 
 feedSub.on('error', (err) => {
