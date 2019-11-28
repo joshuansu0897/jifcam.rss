@@ -28,7 +28,7 @@ async function run() {
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
-      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 5000) {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 500) {
         return
       }
       listOfPromises.push(runService(row.RSS))
