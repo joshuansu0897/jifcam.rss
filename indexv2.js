@@ -3,6 +3,7 @@ const fs = require('fs')
 const RssFeedEmitter = require('rss-feed-emitter')
 const feeder = new RssFeedEmitter()
 const RSSModel = require('./src/models/rss')
+const delay = require('delay')
 
 const config = require('./config').config
 const mongoose = require('mongoose')
@@ -28,15 +29,16 @@ function run() {
 
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
-    .on('data', (row) => {
+    .on('data', async (row) => {
       if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS') {
         return
       }
       rssMap.set(row.RSS, new RSSModel(row.RSS))
       feeder.add({
         url: row.RSS,
-        refresh: 2000
+        refresh: 50000
       })
+      await delay(500)
     })
 
 }
@@ -44,17 +46,24 @@ function run() {
 run()
 
 feeder.on('new-item', async (item) => {
-  console.log(' ***************************** **************************** ')
-  console.log(item.meta.link)
-  const rss = rssMap.get(item.meta.link)
+  try {
+    console.log(' ***************************** **************************** ')
+    console.log(item.meta.link)
+    const rss = rssMap.get(item.meta.link)
 
-  rss.getData(item).then(obj => {
-    rss.insert(obj)
-      .then(res => {
-        console.log('saved', res._doc)
-      })
-      .catch(e => {
-        console.log(e)
-      })
-  })
+    process.nextTick(() => save(rss, item))
+    await delay(500)
+  } catch (err) {
+    console.error(err)
+  }
 })
+
+function save(rss, item) {
+  let obj = rss.getData(item)
+
+  rss.insert(obj)
+    .then(res => {
+      console.log('saved', res._doc)
+    })
+
+}
