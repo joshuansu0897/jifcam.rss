@@ -3,7 +3,7 @@ const { Worker } = require('worker_threads')
 const csv = require('fast-csv')
 const fs = require('fs')
 
-runService = async (workerData) => {
+const runService = async (workerData) => {
   return new Promise(resolve => {
     const worker = new Worker('./src/utils/worker.js', { workerData })
 
