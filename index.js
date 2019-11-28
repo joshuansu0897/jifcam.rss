@@ -1,4 +1,3 @@
-'use strict'
 const { Worker } = require('worker_threads')
 const csv = require('fast-csv')
 const fs = require('fs')
@@ -28,7 +27,7 @@ async function run() {
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
-      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 500) {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 100) {
         return
       }
       listOfPromises.push(runService(row.RSS))
