@@ -24,6 +24,8 @@ function RSSModel(name) {
     mp3Link: Joi.string().required()
   })
 
+  this.listValidator = Joi.array().items(this.validator)
+
   this.modelDB
   try {
     this.modelDB = mongoose.model(this.name)
@@ -33,16 +35,55 @@ function RSSModel(name) {
 }
 
 /**
- * update RSS
+ * getData RSS
  */
-RSSModel.prototype.update = (data) => {
+RSSModel.prototype.getData = (data) => {
+  return {
+    title: data.title,
+    duration: data.pubdate,
+    description: data.description,
+    mp3Link: data.link
+  }
+}
+
+/**
+ * insert RSS
+ */
+RSSModel.prototype.insert = (data) => {
 
   let listCallbacks = [
     function (callback) {
-      Joi.validate(data, _this.validator, callback)
+      Joi.validate(data, this.validator, callback)
     },
     function (data, callback) {
-      _this.modelDB.create(data, callback)
+      this.modelDB.create(data, callback)
+    }
+  ]
+
+  let promise = new Promise((resolve, reject) => {
+    async.waterfall(listCallbacks, (error, result) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+
+  return promise
+}
+
+/**
+ * insertMany RSS
+ */
+RSSModel.prototype.insertMany = (data) => {
+
+  let listCallbacks = [
+    function (callback) {
+      Joi.validate(data, this.listValidator, callback)
+    },
+    function (data, callback) {
+      this.modelDB.insertMany(data, callback)
     }
   ]
 

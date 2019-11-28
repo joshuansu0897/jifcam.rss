@@ -1,6 +1,8 @@
 const { workerData, parentPort } = require('worker_threads')
 const FeedSub = require('feedsub')
+const RSSModel = require('../models/rss')
 
+const rss = new RSSModel(workerData)
 const feedSub = new FeedSub(workerData, {
   // Number of minutes to wait between checking the feed for new items.
   interval: 1,
@@ -29,12 +31,20 @@ const feedSub = new FeedSub(workerData, {
 
 feedSub.on('item', (item) => {
   parentPort.postMessage('Got item!')
-  parentPort.postMessage(item)
+
+  const data = rss.getData(item)
+  console.log(data)
+
+  rss.insert(data)
 })
 
 feedSub.on('items', (items) => {
   parentPort.postMessage('Got Many item!')
-  parentPort.postMessage(items)
+
+  const data = items.map(item => rss.getData(item))
+  console.log(data)
+
+  rss.insertMany(data)
 })
 
 feedSub.on('error', (err) => {
