@@ -2,6 +2,8 @@ const { Worker } = require('worker_threads')
 const csv = require('fast-csv')
 const fs = require('fs')
 
+let coun = 0
+
 const runService = async (workerData) => {
   const worker = new Worker('./src/utils/worker.js', { workerData })
 
@@ -24,6 +26,7 @@ const runService = async (workerData) => {
 
 function terminateWorker(worker) {
   worker.terminate()
+  coun--
   console.log('TERMINATE!')
 }
 
@@ -33,10 +36,11 @@ async function run() {
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
-      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS') {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || coun === 500) {
         return
       }
       listOfPromises.push(runService(row.RSS))
+      coun++
     })
 }
 

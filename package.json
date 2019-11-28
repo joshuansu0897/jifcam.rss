@@ -8,9 +8,14 @@
     "start:prod": "pm2 start index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "browser": {
+    "http": false,
+    "https": false
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@arrows/worker": "^1.2.0",
     "@hapi/joi": "^15.1.1",
     "amqplib": "^0.5.5",
     "async": "^3.1.0",
@@ -19,7 +24,8 @@
     "fast-csv": "^3.4.0",
     "feedsub": "^0.7.1",
     "mongoose": "^5.7.12",
-    "rss-feed-emitter": "^2.0.1"
+    "rss-feed-emitter": "^2.0.1",
+    "rss-parser": "^3.7.3"
   },
   "optionalDependencies": {
     "pm2": "^4.2.0"

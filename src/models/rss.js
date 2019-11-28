@@ -38,7 +38,7 @@ function RSSModel(name) {
 /**
  * getData RSS
  */
-RSSModel.prototype.getData = function (data) {
+RSSModel.prototype.getData = async (data) => {
   let title = data.title
   if (title === null || title === undefined) {
     title = 'title empty'
@@ -77,10 +77,29 @@ RSSModel.prototype.getData = function (data) {
 /**
  * insert RSS
  */
-RSSModel.prototype.insert = async function (data) {
-  if (await Joi.validate(data, this.validator)) {
-    return await this.modelDB.create(data)
-  }
+RSSModel.prototype.insert = function (data) {
+  const _this = this
+
+  let listCallbacks = [
+    function (callback) {
+      Joi.validate(data, _this.validator, callback)
+    },
+    function (data, callback) {
+      _this.modelDB.create(data, callback)
+    }
+  ]
+
+  let promise = new Promise((resolve, reject) => {
+    async.waterfall(listCallbacks, async function (error, result) {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+
+  return promise
 }
 
 /**
