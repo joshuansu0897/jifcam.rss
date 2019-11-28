@@ -8,10 +8,14 @@ const runService = async (workerData) => {
 
     worker.on('message', (incoming) => {
       console.log({ incoming })
+      if (incoming === 'err!') {
+        worker.terminate()
+      }
     })
 
     worker.on('error', (code) => {
       new Error(`Worker error with exit code ${code}`)
+      worker.terminate()
     })
 
     worker.on('exit', (code) =>
@@ -22,16 +26,14 @@ const runService = async (workerData) => {
 
 async function run() {
   const listOfPromises = []
-  let limitWorkers = 0
 
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
-      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 500) {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS') {
         return
       }
       listOfPromises.push(runService(row.RSS))
-      limitWorkers++
     })
 
   return await Promise.all(listOfPromises)

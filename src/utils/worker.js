@@ -57,7 +57,7 @@ feedSub.on('item', async (item) => {
 
     await rss.insert(data)
   } catch (err) {
-    parentPort.postMessage('err!')
+    parentPort.postMessage('err item!')
     parentPort.postMessage(err)
   }
 })
@@ -72,7 +72,7 @@ feedSub.on('items', async (items) => {
 
     await rss.insertMany(data)
   } catch (err) {
-    parentPort.postMessage('err!')
+    parentPort.postMessage('err items!')
     parentPort.postMessage(err)
   }
 })
