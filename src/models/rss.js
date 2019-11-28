@@ -19,10 +19,10 @@ function RSSModel(name) {
   })
 
   this.validator = Joi.object().keys({
-    title: Joi.string().required(),
-    duration: Joi.string().required(),
-    description: Joi.string().required(),
-    mp3Link: Joi.string().required()
+    title: Joi.string().optional(),
+    duration: Joi.string().optional(),
+    description: Joi.string().optional(),
+    mp3Link: Joi.string().optional()
   })
 
   this.listValidator = Joi.array().items(this.validator)
@@ -55,13 +55,9 @@ RSSModel.prototype.insert = function (data) {
 
   let listCallbacks = [
     function (callback) {
-      console.log(' **** data joi **** ')
-      console.log(data)
       Joi.validate(data, _this.validator, callback)
     },
     function (data, callback) {
-      console.log(' **** data **** ')
-      console.log(data)
       _this.modelDB.create(data, callback)
     }
   ]
@@ -69,10 +65,8 @@ RSSModel.prototype.insert = function (data) {
   let promise = new Promise((resolve, reject) => {
     async.waterfall(listCallbacks, async function (error, result) {
       if (error) {
-        console.log(error)
         reject(error)
       } else {
-        console.log(result)
         resolve(result)
       }
     })
@@ -89,13 +83,9 @@ RSSModel.prototype.insertMany = function (data) {
 
   let listCallbacks = [
     function (callback) {
-      console.log(' **** data joi **** ')
-      console.log(data)
       Joi.validate(data, _this.listValidator, callback)
     },
     function (data, callback) {
-      console.log(' **** data **** ')
-      console.log(data)
       _this.modelDB.insertMany(data, callback)
     }
   ]
@@ -103,10 +93,8 @@ RSSModel.prototype.insertMany = function (data) {
   let promise = new Promise((resolve, reject) => {
     async.waterfall(listCallbacks, async function (error, result) {
       if (error) {
-        console.log(error)
         reject(error)
       } else {
-        console.log(result)
         resolve(result)
       }
     })

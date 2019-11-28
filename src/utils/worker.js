@@ -2,6 +2,24 @@ const { workerData, parentPort } = require('worker_threads')
 const FeedSub = require('feedsub')
 const RSSModel = require('../models/rss')
 
+const config = require('../../config').config
+const mongoose = require('mongoose')
+
+const DB_URI = process.env.DB_URI || config.DB_URI || 'mongodb://localhost:27017/'
+const DB_NAME = config.MONGODB_DB || 'jifcam_rss'
+mongoose.set('useNewUrlParser', true)
+mongoose.set('useFindAndModify', false)
+mongoose.set('useUnifiedTopology', true)
+mongoose.set('useCreateIndex', true)
+
+mongoose.connect(DB_URI + DB_NAME)
+
+mongoose.connection.on('error', console.error.bind(console))
+
+mongoose.connection.once('open', () => {
+  console.log('MongoDB connect')
+})
+
 const rss = new RSSModel(workerData)
 const feedSub = new FeedSub(workerData, {
   // Number of minutes to wait between checking the feed for new items.
@@ -34,10 +52,10 @@ feedSub.on('item', async (item) => {
     parentPort.postMessage('Got item!')
 
     const data = rss.getData(item)
-    parentPort.postMessage(data)
 
-    const res = await rss.insert(data)
-    parentPort.postMessage(res)
+    parentPort.postMessage(workerData)
+
+    await rss.insert(data)
   } catch (err) {
     parentPort.postMessage('err!')
     parentPort.postMessage(err)
@@ -49,10 +67,10 @@ feedSub.on('items', async (items) => {
     parentPort.postMessage('Got Many item!')
 
     const data = items.map(item => rss.getData(item))
-    parentPort.postMessage(data)
 
-    const res = await rss.insertMany(data)
-    parentPort.postMessage(res)
+    parentPort.postMessage(workerData)
+
+    await rss.insertMany(data)
   } catch (err) {
     parentPort.postMessage('err!')
     parentPort.postMessage(err)
