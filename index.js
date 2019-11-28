@@ -23,14 +23,16 @@ const runService = async (workerData) => {
 
 async function run() {
   const listOfPromises = []
+  let limitWorkers = 0
 
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
-      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS') {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || limitWorkers === 5000) {
         return
       }
       listOfPromises.push(runService(row.RSS))
+      limitWorkers++
     })
 
   return await Promise.all(listOfPromises)
