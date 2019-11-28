@@ -1,3 +1,4 @@
+'use strict'
 const { Worker } = require('worker_threads')
 const csv = require('fast-csv')
 const fs = require('fs')

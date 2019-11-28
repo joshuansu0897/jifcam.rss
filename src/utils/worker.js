@@ -1,3 +1,4 @@
+'use strict'
 const { workerData, parentPort } = require('worker_threads')
 const FeedSub = require('feedsub')
 const RSSModel = require('../models/rss')

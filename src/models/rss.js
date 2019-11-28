@@ -1,3 +1,4 @@
+'use strict'
 const mongoose = require('mongoose')
 const async = require('async')
 const Joi = require('@hapi/joi')
