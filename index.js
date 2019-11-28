@@ -1,4 +1,6 @@
 const { Worker } = require('worker_threads')
+const csv = require('fast-csv')
+const fs = require('fs')
 
 runService = async (workerData) => {
   return new Promise(resolve => {
@@ -18,16 +20,18 @@ runService = async (workerData) => {
   })
 }
 
-const listOfArguments = [
-  'https://www.spreaker.com/show/3202978/episodes/feed',
-  'https://feeds.megaphone.fm/extraterrestrial',
-  'https://feed.podbean.com/alav/feed.xml',
-  'https://feed.podbean.com/couplegoals/feed.xml',
-  'https://www.spreaker.com/show/3287452/episodes/feedu'
-]
-
 async function run() {
-  const listOfPromises = listOfArguments.map(runService)
+  const listOfPromises = []
+
+  fs.createReadStream('./rss-links-large.csv')
+    .pipe(csv.parse({ headers: true }))
+    .on('data', (row) => {
+      if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS') {
+        return
+      }
+      listOfPromises.push(runService(row.RSS))
+    })
+
   return await Promise.all(listOfPromises)
 }
 

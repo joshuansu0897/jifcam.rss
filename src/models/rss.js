@@ -19,10 +19,10 @@ function RSSModel(name) {
   })
 
   this.validator = Joi.object().keys({
-    title: Joi.string().optional(),
-    duration: Joi.string().optional(),
-    description: Joi.string().optional(),
-    mp3Link: Joi.string().optional()
+    title: Joi.string().required(),
+    duration: Joi.string().required(),
+    description: Joi.string().required(),
+    mp3Link: Joi.string().required()
   })
 
   this.listValidator = Joi.array().items(this.validator)

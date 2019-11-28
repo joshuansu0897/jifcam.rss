@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start:prod": "pm2 index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,7 +14,11 @@
     "@hapi/joi": "^15.1.1",
     "async": "^3.1.0",
     "dotenv": "^8.2.0",
+    "fast-csv": "^3.4.0",
     "feedsub": "^0.7.1",
     "mongoose": "^5.7.12"
+  },
+  "optionalDependencies": {
+    "pm2": "^4.2.0"
   }
 }
