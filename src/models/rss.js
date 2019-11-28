@@ -38,12 +38,39 @@ function RSSModel(name) {
 /**
  * getData RSS
  */
-RSSModel.prototype.getData = function (data) {
+RSSModel.prototype.getData = async (data) => {
+  let title = data.title
+  if (title === null || title === undefined) {
+    title = 'title empty'
+  }
+
+  let duration = data.pubdate
+  if (duration === null || duration === undefined) {
+    duration = 'duration empty'
+  } else {
+    duration = duration.toString()
+  }
+
+  let description = data.description
+  if (description === null || description === undefined) {
+    description = 'description empty'
+  }
+
+  let mp3Link
+  if (data.enclosures !== null && data.enclosures !== undefined && data.enclosures.lenght > 0) {
+    mp3Link = data.enclosures[0].url
+    if (mp3Link === null || mp3Link === undefined) {
+      mp3Link = 'url empty'
+    }
+  } else {
+    mp3Link = 'enclosures empty'
+  }
+
   return {
-    title: data.title,
-    duration: data.pubdate,
-    description: data.description,
-    mp3Link: data.link
+    title,
+    duration,
+    description,
+    mp3Link
   }
 }
 

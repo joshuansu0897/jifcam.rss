@@ -17,7 +17,8 @@
     "dotenv": "^8.2.0",
     "fast-csv": "^3.4.0",
     "feedsub": "^0.7.1",
-    "mongoose": "^5.7.12"
+    "mongoose": "^5.7.12",
+    "rss-feed-emitter": "^2.0.1"
   },
   "optionalDependencies": {
     "pm2": "^4.2.0"
