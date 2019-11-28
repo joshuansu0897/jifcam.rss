@@ -2,9 +2,16 @@ const { Worker } = require('worker_threads')
 
 runService = async (workerData) => {
   const worker = new Worker('./src/utils/worker.js', { workerData })
-  worker.on('message', incoming => console.log({ incoming }))
-  worker.on('error', code => new Error(`Worker error with exit code ${code}`))
-  worker.on('exit', code =>
+
+  worker.on('message', (incoming) => {
+    console.log({ incoming })
+  })
+
+  worker.on('error', (code) => {
+    new Error(`Worker error with exit code ${code}`)
+  })
+
+  worker.on('exit', (code) =>
     console.log(`Worker stopped with exit code ${code}`)
   )
 }
