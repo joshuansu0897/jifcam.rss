@@ -24,6 +24,7 @@
     "fast-csv": "^3.4.0",
     "feedsub": "^0.7.1",
     "mongoose": "^5.7.12",
+    "podcast-feed-parser": "^1.0.1",
     "rss-feed-emitter": "^2.0.1",
     "rss-parser": "^3.7.3"
   },

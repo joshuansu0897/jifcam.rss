@@ -78,28 +78,9 @@ RSSModel.prototype.getData = async (data) => {
  * insert RSS
  */
 RSSModel.prototype.insert = function (data) {
-  const _this = this
-
-  let listCallbacks = [
-    function (callback) {
-      Joi.validate(data, _this.validator, callback)
-    },
-    function (data, callback) {
-      _this.modelDB.create(data, callback)
-    }
-  ]
-
-  let promise = new Promise((resolve, reject) => {
-    async.waterfall(listCallbacks, async function (error, result) {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(result)
-      }
-    })
+  this.modelDB.create(data, () => {
+    console.log(data._doc)
   })
-
-  return promise
 }
 
 /**
