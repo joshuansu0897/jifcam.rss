@@ -31,15 +31,13 @@ function terminateWorker(worker) {
 }
 
 async function run() {
-  const listOfPromises = []
-
   fs.createReadStream('./rss-links-large.csv')
     .pipe(csv.parse({ headers: true }))
     .on('data', (row) => {
       if (row.RSS === null || row.RSS === undefined || row.RSS === 'No RSS' || coun === 500) {
         return
       }
-      listOfPromises.push(runService(row.RSS))
+      runService(row.RSS)
       coun++
     })
 }

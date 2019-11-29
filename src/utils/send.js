@@ -37,9 +37,4 @@ amqp.connect(RABBIT_URL, (err, conn) => {
       num++
     }, 1000)
   })
-
-  // setTimeout(() => {
-  //   conn.close()
-  //   process.exit(0)
-  // }, 500)
 })
